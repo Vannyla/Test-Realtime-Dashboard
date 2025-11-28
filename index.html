@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Market Dashboard - Purple Cloud</title>
+    <title>Live Market Dashboard - Fixed Layout</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -14,11 +14,11 @@
             --card-bg: #ffffff;
             --text-dark: #1e293b;
             
-            /* Color Palette Purple Theme */
-            --theme-purple: #4a148c; /* Tím đậm chủ đạo */
-            --up-color: #00c853; /* Xanh lá */
-            --down-color: #d32f2f; /* Đỏ đậm */
-            --neutral-color: #ff6f00; /* Cam */
+            /* Theme Colors */
+            --theme-purple: #4a148c;
+            --up-color: #00c853;
+            --down-color: #d32f2f;
+            --neutral-color: #ff6f00;
             
             --up-bg-light: rgba(0, 200, 83, 0.1);
             --down-bg-light: rgba(211, 47, 47, 0.1);
@@ -27,20 +27,16 @@
 
         body { font-family: 'Inter', sans-serif; background-color: var(--primary-bg); color: var(--text-dark); }
         
-        /* Header */
         .dashboard-header { background-color: #fff; padding: 20px 0; border-bottom: 3px solid var(--theme-purple); margin-bottom: 30px; }
         .brand-text { color: var(--theme-purple); font-weight: 800; }
         
-        /* Cards */
         .card { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; transition: all 0.3s ease; background: var(--card-bg); }
         .card:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(74, 20, 140, 0.1); }
         
-        /* Metric Cards Border Color */
         .metric-card { border-left: 5px solid transparent; }
         .metric-card.bullish { border-left-color: var(--up-color); }
         .metric-card.bearish { border-left-color: var(--down-color); }
         
-        /* Typography Colors */
         .text-up { color: var(--up-color) !important; }
         .bg-up { background-color: var(--up-color) !important; color: white; }
         .badge-up-light { background-color: var(--up-bg-light); color: var(--up-color); }
@@ -49,14 +45,18 @@
         .bg-down { background-color: var(--down-color) !important; color: white; }
         .badge-down-light { background-color: var(--down-bg-light); color: var(--down-color); }
 
-        /* Table Styling */
-        .table thead th { font-size: 0.85rem; text-transform: uppercase; color: white; background-color: var(--theme-purple); border: none; padding-top: 12px; padding-bottom: 12px;}
+        .table thead th { font-size: 0.85rem; text-transform: uppercase; color: white; background-color: var(--theme-purple); border: none; padding: 12px;}
         .table thead th:first-child { border-top-left-radius: 8px; }
         .table thead th:last-child { border-top-right-radius: 8px; }
         
-        /* Recommendation Box */
         .recommendation-card { background: linear-gradient(135deg, var(--theme-purple) 0%, #7c43bd 100%); color: white; }
         .recommendation-card .text-white-50 { color: rgba(255, 255, 255, 0.8) !important; }
+
+        /* Animation khi số nhảy */
+        @keyframes flash-green { 0% { background-color: rgba(0, 200, 83, 0.3); } 100% { background-color: transparent; } }
+        @keyframes flash-red { 0% { background-color: rgba(211, 47, 47, 0.3); } 100% { background-color: transparent; } }
+        .flash-up { animation: flash-green 1s; border-radius: 4px; }
+        .flash-down { animation: flash-red 1s; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -66,7 +66,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h4 class="mb-0 brand-text"><i class="fas fa-chart-pie me-2"></i>MARKET INTELLIGENCE</h4>
-                    <small class="text-secondary fw-bold">Kết nối dữ liệu: <span class="text-success"><i class="fas fa-wifi me-1"></i>Cloud Realtime</span></small>
+                    <small class="text-secondary fw-bold">Trạng thái: <span class="text-success fw-bold"><i class="fas fa-wifi me-1"></i>Realtime Cloud</span></small>
                 </div>
                 <div class="d-flex gap-2">
                     <span class="badge bg-dark">CMT Level 3</span>
@@ -80,43 +80,45 @@
         
         <div class="row">
             <div class="col-md-4">
-                <div class="card metric-card bullish p-3" id="card-vnindex">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <p class="text-muted mb-1 text-uppercase fw-bold" style="font-size: 0.8rem;">VN-INDEX</p>
-                            <div class="stat-value fw-bold fs-3" id="vnindex-price">Loading...</div>
+                <div class="card metric-card bullish p-4" id="card-vnindex">
+                    <div class="row align-items-center">
+                        <div class="col-6">
+                            <p class="text-muted mb-0 fw-bold small text-uppercase">VN-INDEX</p>
+                            <h3 class="fw-bold mb-0 text-dark" id="vnindex-price">Loading...</h3>
                         </div>
-                        <div class="text-end">
-                            <span class="badge badge-up-light fw-bold px-2 py-1 rounded" id="vnindex-change-badge">--</span>
-                            <div class="mt-2" style="font-size: 0.8rem;">Xu hướng: <span class="fw-bold" id="vnindex-trend">--</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card metric-card bearish p-3" id="card-hnx">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <p class="text-muted mb-1 text-uppercase fw-bold" style="font-size: 0.8rem;">HNX-INDEX</p>
-                            <div class="stat-value fw-bold fs-3" id="hnx-price">Loading...</div>
-                        </div>
-                        <div class="text-end">
-                            <span class="badge badge-down-light fw-bold px-2 py-1 rounded" id="hnx-change-badge">--</span>
-                            <div class="mt-2" style="font-size: 0.8rem;">Xu hướng: <span class="fw-bold" id="hnx-trend">--</span></div>
+                        <div class="col-6 text-end">
+                            <span class="badge badge-up-light fw-bold px-3 py-2 rounded mb-2" id="vnindex-change-badge">--</span>
+                            <div class="small fw-bold text-secondary">Xu hướng: <span id="vnindex-trend">--</span></div>
                         </div>
                     </div>
                 </div>
             </div>
+            
             <div class="col-md-4">
-                <div class="card metric-card bullish p-3" id="card-upcom">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <p class="text-muted mb-1 text-uppercase fw-bold" style="font-size: 0.8rem;">UPCOM-INDEX</p>
-                            <div class="stat-value fw-bold fs-3" id="upcom-price">Loading...</div>
+                <div class="card metric-card bearish p-4" id="card-hnx">
+                    <div class="row align-items-center">
+                        <div class="col-6">
+                            <p class="text-muted mb-0 fw-bold small text-uppercase">HNX-INDEX</p>
+                            <h3 class="fw-bold mb-0 text-dark" id="hnx-price">Loading...</h3>
                         </div>
-                        <div class="text-end">
-                            <span class="badge badge-up-light fw-bold px-2 py-1 rounded" id="upcom-change-badge">--</span>
-                            <div class="mt-2" style="font-size: 0.8rem;">Xu hướng: <span class="fw-bold" id="upcom-trend">--</span></div>
+                        <div class="col-6 text-end">
+                            <span class="badge badge-down-light fw-bold px-3 py-2 rounded mb-2" id="hnx-change-badge">--</span>
+                            <div class="small fw-bold text-secondary">Xu hướng: <span id="hnx-trend">--</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card metric-card bullish p-4" id="card-upcom">
+                    <div class="row align-items-center">
+                        <div class="col-6">
+                            <p class="text-muted mb-0 fw-bold small text-uppercase">UPCOM-INDEX</p>
+                            <h3 class="fw-bold mb-0 text-dark" id="upcom-price">Loading...</h3>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span class="badge badge-up-light fw-bold px-3 py-2 rounded mb-2" id="upcom-change-badge">--</span>
+                            <div class="small fw-bold text-secondary">Xu hướng: <span id="upcom-trend">--</span></div>
                         </div>
                     </div>
                 </div>
@@ -172,19 +174,17 @@
                     <div class="card-body">
                         <h5 class="card-title fw-bold text-uppercase"><i class="fas fa-lightbulb me-2"></i>Khuyến Nghị Đầu Tư</h5>
                         <hr>
-                        
                         <div class="mb-4">
                             <div class="d-flex align-items-center mb-1">
                                 <span class="badge bg-white text-success fw-bold me-2">MUA (LONG)</span>
                             </div>
-                            <p class="small mb-0 text-white-50">Tập trung tỷ trọng vào <strong>Dịch vụ tiêu dùng</strong> và <strong>Tài chính</strong>. Canh rung lắc để gia tăng.</p>
+                            <p class="small mb-0 text-white-50">Tập trung: <strong>Dịch vụ tiêu dùng</strong>, <strong>Tài chính</strong>. Canh rung lắc để gia tăng.</p>
                         </div>
-
                         <div>
                             <div class="d-flex align-items-center mb-1">
                                 <span class="badge bg-white text-danger fw-bold me-2">TRÁNH (AVOID)</span>
                             </div>
-                            <p class="small mb-0 text-white-50">Không bắt đáy <strong>Dầu khí</strong>, <strong>Viễn thông</strong> khi chưa có tín hiệu dòng tiền.</p>
+                            <p class="small mb-0 text-white-50">Hạn chế bắt đáy <strong>Dầu khí</strong>, <strong>Viễn thông</strong>.</p>
                         </div>
                     </div>
                 </div>
@@ -201,41 +201,37 @@
         // BƯỚC QUAN TRỌNG: DÁN MÃ BIN ID CỦA BẠN VÀO DÒNG DƯỚI ĐÂY
         // ================================================================
         const MY_BIN_ID = "33dbfd2b0feffa6853ba"; 
-        // Ví dụ: const MY_BIN_ID = "e94c25c382xxxxx";
         // ================================================================
 
         async function fetchRealData() {
             try {
-                // Gọi đến npoint.io kèm theo thời gian để tránh bị lưu cache cũ
                 const response = await fetch(`https://api.npoint.io/${MY_BIN_ID}?t=${new Date().getTime()}`);
-                
-                if (!response.ok) throw new Error("Không tìm thấy dữ liệu");
+                if (!response.ok) throw new Error("Không kết nối được npoint");
                 
                 const data = await response.json();
 
-                // 1. Cập nhật các chỉ số Index lớn
+                // 1. Cập nhật các chỉ số Index (Sử dụng ID đã được chỉnh sửa layout)
                 updateTicker('vnindex', data.vnindex.price, data.vnindex.change);
                 updateTicker('hnx', data.hnx.price, data.hnx.change);
                 updateTicker('upcom', data.upcom.price, data.upcom.change);
 
-                // 2. Cập nhật các Ngành (ID phải khớp với HTML bên trên)
+                // 2. Cập nhật các Ngành
                 updateSector('sec-dvtd', data.dvtd.price, data.dvtd.change);
                 updateSector('sec-htd', data.htd.price, data.htd.change);
                 updateSector('sec-dk', data.dk.price, data.dk.change);
 
             } catch (error) {
-                console.log("Đang đợi kết nối...", error);
+                console.log("Đang đợi dữ liệu...", error);
             }
         }
 
-        // Hàm hỗ trợ cập nhật giao diện cho Index
+        // Hàm cập nhật Index (được sửa để tương thích layout mới)
         function updateTicker(id, price, changePct) {
             const priceEl = document.getElementById(id + '-price');
             const badgeEl = document.getElementById(id + '-change-badge');
             const trendEl = document.getElementById(id + '-trend');
             const cardEl = document.getElementById('card-' + id);
             
-            // Ép kiểu số để tính toán
             const numPrice = parseFloat(price);
             const numChange = parseFloat(changePct);
             
@@ -243,13 +239,21 @@
             const colorClass = isUp ? 'text-up' : 'text-down';
             const bgClass = isUp ? 'badge-up-light' : 'badge-down-light';
             const icon = isUp ? '<i class="fas fa-arrow-up"></i>' : '<i class="fas fa-arrow-down"></i>';
-            const priceFormatted = numPrice.toFixed(2);
+            const priceFormatted = numPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             const pctFormatted = (numChange > 0 ? '+' : '') + numChange.toFixed(2) + '%';
 
-            if(priceEl) priceEl.innerText = priceFormatted;
+            if(priceEl) {
+                // Hiệu ứng nháy khi giá thay đổi
+                if(priceEl.innerText !== priceFormatted && priceEl.innerText !== "Loading...") {
+                    priceEl.classList.remove('flash-up', 'flash-down');
+                    void priceEl.offsetWidth; // Trigger reflow
+                    priceEl.classList.add(isUp ? 'flash-up' : 'flash-down');
+                }
+                priceEl.innerText = priceFormatted;
+            }
             
             if(badgeEl) {
-                badgeEl.className = `badge fw-bold px-2 py-1 rounded ${bgClass}`;
+                badgeEl.className = `badge fw-bold px-3 py-2 rounded mb-2 ${bgClass}`;
                 badgeEl.innerHTML = `${icon} ${pctFormatted}`;
             }
             
@@ -264,7 +268,6 @@
             }
         }
 
-        // Hàm hỗ trợ cập nhật giao diện cho Ngành
         function updateSector(id, price, changePct) {
             const priceEl = document.getElementById(id + '-price');
             const pctEl = document.getElementById(id + '-pct');
@@ -280,16 +283,11 @@
             }
         }
 
-        // Đồng hồ
         setInterval(() => {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('vi-VN');
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString('vi-VN');
         }, 1000);
 
-        // Chạy cập nhật 3 giây một lần
         setInterval(fetchRealData, 3000);
-        
-        // Chạy ngay lập tức khi mở trang
         fetchRealData();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
